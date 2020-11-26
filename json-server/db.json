@@ -1,19 +1,19 @@
 {
   "todos": [
     {
-      "id": 1,
-      "text": "go to supermarket",
-      "completed": true
+      "id": 1606372793297,
+      "text": "clean my room",
+      "completed": false
     },
     {
-      "id": 2,
-      "text": "homework",
-      "completed": true
+      "id": 1606372806218,
+      "text": "visit my friend",
+      "completed": false
     },
     {
-      "id": 4,
-      "text": "visit my friend lily",
-      "completed": true
+      "id": 1606372821700,
+      "text": "workout",
+      "completed": false
     }
   ]
 }
