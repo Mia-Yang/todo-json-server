@@ -25,7 +25,8 @@ function getItemFromServer(id) {
 
 // post list on json-server 
 function postItemIntoServer(item) {
-    fetch(`https://localhost:3000/todos`, {
+    console.log(JSON.stringify(item))
+    fetch(`http://localhost:3000/todos`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -90,7 +91,7 @@ window.addEventListener('load', initialize)
 const todoList = document.querySelector(".todo-list");
 const addButton = document.querySelector(".add-btn");
 const inputText = document.querySelector(".inputbox");
-addButton.addEventListener('click', addItem)
+
 
 function renderItem(item) {
     const todoItem = document.createElement("li");
@@ -105,4 +106,21 @@ function renderItem(item) {
     <span id="text-${item.id}" onfocus="editTodo(${item.id})" class="single-line" contenteditable > ${item.text} </span>
     <button class="del" onclick="removeTodo(${item.id})">✖️</button>`;
     todoList.appendChild(todoItem);
+}
+
+addButton.addEventListener('click', addItem);
+
+function addItem(e) {
+    e.preventDefault();
+    const textContent = inputText.value.trim();
+    inputText.value = '';
+    let newTodo = {
+        id: new Date().getTime(),
+        text: textContent,
+        completed: false,
+    }
+    if (textContent.length !== 0) {
+        renderItem(newTodo);
+        postItemIntoServer(newTodo);
+    }
 }
