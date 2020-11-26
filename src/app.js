@@ -1,31 +1,28 @@
 // get history from json-server
 import "@babel/polyfill"
 
-function getListFromServer() {
-    return fetch("http://localhost:3000/todos", { method: 'GET' })
-        .then(response => response.json())
-        .then(result => result)
-        .catch(error => {
-            console.error('Error:', error);
-        });
+async function getListFromServer() {
+    try {
+        const response = await fetch("http://localhost:3000/todos", { method: 'GET' });
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 
 // get item from json-server
-function getItemFromServer(id) {
-    const item = fetch(`http://localhost:3000/todos/${id}`, { method: 'GET' })
-        .then(response => response.json())
-        .then(result => {
-            console.log('Success:', result);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    return item;
+async function getItemFromServer(id) {
+    try {
+        const response = await fetch(`http://localhost:3000/todos/${id}`, { method: 'GET' });
+        return await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 
 // post list on json-server 
 function postItemIntoServer(item) {
-    console.log(JSON.stringify(item))
     fetch(`http://localhost:3000/todos`, {
             method: 'POST',
             headers: {
@@ -33,9 +30,9 @@ function postItemIntoServer(item) {
             },
             body: JSON.stringify(item),
         })
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => {
-            console.log('Success:', data);
+            console.log('Post Success:', data);
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -52,9 +49,9 @@ function updateItemInServer(item) {
             },
             body: JSON.stringify(item),
         })
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => {
-            console.log('Success:', data);
+            console.log('Update Success:', data);
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -66,8 +63,9 @@ function deleteItemInServer(id) {
     fetch(`http://localhost:3000/todos/${id}`, {
             method: 'DELETE',
         })
+        .then(res => res.json())
         .then(data => {
-            console.log('Success:', data);
+            console.log('Delete Success:', data);
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -131,4 +129,22 @@ window.removeTodo = removeTodo;
 function removeTodo(id) {
     deleteItemInServer(id);
     todoList.removeChild(document.getElementById(id));
+}
+
+//toggle todos
+window.toggleTodo = toggleTodo;
+
+async function toggleTodo(id) {
+    // fetch(`http://localhost:3000/todos/${id}`, { method: 'GET' })
+    //     .then(response => response.json())
+    //     .then(result => updateItemInServer({...result, completed: !result.completed }))
+    //     .catch(error => {
+    //         console.error('Error:', error);
+    //     });
+
+    getItemFromServer(id).then(result => updateItemInServer({...result, completed: !result.completed }))
+
+
+
+    document.getElementById(id).classList.toggle("finished")
 }
