@@ -45,7 +45,7 @@ function postItemIntoServer(item) {
 // update list on json-server 
 function updateItemInServer(item) {
     // console.log(id)
-    fetch(`https://localhost:3000/todos/${item.id}`, {
+    fetch(`http://localhost:3000/todos/${item.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -63,8 +63,8 @@ function updateItemInServer(item) {
 
 // DELETE item in json-server 
 function deleteItemInServer(id) {
-    fetch(`https://localhost:3000/todos/${id}`, {
-            method: 'DELTE',
+    fetch(`http://localhost:3000/todos/${id}`, {
+            method: 'DELETE',
         })
         .then(data => {
             console.log('Success:', data);
@@ -123,4 +123,12 @@ function addItem(e) {
         renderItem(newTodo);
         postItemIntoServer(newTodo);
     }
+}
+
+//delete todos
+window.removeTodo = removeTodo;
+
+function removeTodo(id) {
+    deleteItemInServer(id);
+    todoList.removeChild(document.getElementById(id));
 }
