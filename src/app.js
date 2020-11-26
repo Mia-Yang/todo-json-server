@@ -41,7 +41,6 @@ function postItemIntoServer(item) {
 
 // update list on json-server 
 function updateItemInServer(item) {
-    // console.log(id)
     fetch(`http://localhost:3000/todos/${item.id}`, {
             method: 'PUT',
             headers: {
@@ -63,25 +62,18 @@ function deleteItemInServer(id) {
     fetch(`http://localhost:3000/todos/${id}`, {
             method: 'DELETE',
         })
-        .then(res => res.json())
-        .then(data => {
-            console.log('Delete Success:', data);
+        .then(result => {
+            console.log('Delete Success');
         })
         .catch((error) => {
             console.error('Error:', error);
         });
 }
 
-// clear todos in json-server
-function clearTodosInServer() {
-
-}
-
-
 // initialize history
 const initialize = async() => {
-    const arr = await getListFromServer();
-    arr.forEach(item => renderItem(item))
+    const historyList = await getListFromServer();
+    historyList.forEach(item => renderItem(item))
 }
 window.addEventListener('load', initialize)
 
@@ -154,4 +146,14 @@ function editTodo(id) {
             textSpan.innerText = originalText;
         }
     })
+}
+
+//clear todos
+const clearButton = document.querySelector(".clear")
+clearButton.onclick = async function() {
+    while (todoList.firstChild) {
+        todoList.removeChild(todoList.lastChild);
+    }
+    const historyList = await getListFromServer();
+    historyList.map(item => item.id).forEach(id => deleteItemInServer(id));
 }
