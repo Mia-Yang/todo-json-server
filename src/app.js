@@ -1,74 +1,12 @@
 // get history from json-server
 import "@babel/polyfill"
-
-async function getListFromServer() {
-    try {
-        const response = await fetch("http://localhost:3000/todos", { method: 'GET' });
-        const result = await response.json();
-        return result;
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
-// get item from json-server
-async function getItemFromServer(id) {
-    try {
-        const response = await fetch(`http://localhost:3000/todos/${id}`, { method: 'GET' });
-        return await response.json();
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
-// post list on json-server 
-function postItemIntoServer(item) {
-    fetch(`http://localhost:3000/todos`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(item),
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log('Post Success:', data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-}
-
-// update list on json-server 
-function updateItemInServer(item) {
-    fetch(`http://localhost:3000/todos/${item.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(item),
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log('Update Success:', data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-}
-
-// DELETE item in json-server 
-function deleteItemInServer(id) {
-    fetch(`http://localhost:3000/todos/${id}`, {
-            method: 'DELETE',
-        })
-        .then(result => {
-            console.log('Delete Success');
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-}
+import {
+    getListFromServer,
+    getItemFromServer,
+    postItemIntoServer,
+    updateItemInServer,
+    deleteItemInServer
+} from './request'
 
 // initialize history
 const initialize = async() => {
@@ -82,7 +20,6 @@ const todoList = document.querySelector(".todo-list");
 const addButton = document.querySelector(".add-btn");
 const inputText = document.querySelector(".inputbox");
 
-
 function renderItem(item) {
     const todoItem = document.createElement("li");
     if (item.completed === true) {
@@ -90,10 +27,11 @@ function renderItem(item) {
     }
     todoItem.setAttribute("id", item.id)
     let isChecked = item.completed ? "checked" : "";
+    let canEdit = item.completed ? "false" : "true";
 
     todoItem.innerHTML =
         `<input type="checkbox" onclick="toggleTodo(${item.id})" ${isChecked}> 
-    <span id="text-${item.id}" onfocus="editTodo(${item.id})" class="single-line" contenteditable > ${item.text} </span>
+    <span id="text-${item.id}" onfocus="editTodo(${item.id})" class="single-line" contenteditable="${canEdit}" > ${item.text} </span>
     <button class="del" onclick="removeTodo(${item.id})">✖️</button>`;
     todoList.appendChild(todoItem);
 }
@@ -127,8 +65,12 @@ function removeTodo(id) {
 window.toggleTodo = toggleTodo;
 
 function toggleTodo(id) {
-    getItemFromServer(id).then(result => updateItemInServer({...result, completed: !result.completed }))
-    document.getElementById(id).classList.toggle("finished")
+    getItemFromServer(id)
+        .then(result => updateItemInServer({...result, completed: !result.completed }))
+        .then(document.getElementById(id).classList.toggle("finished"))
+    const spanElement = document.getElementById("text-" + id);
+    getItemFromServer(id).then(result => result.completed ? spanElement.setAttribute("contentEditable", true) : spanElement.setAttribute("contentEditable", false))
+
 }
 
 //edit todos
@@ -139,9 +81,10 @@ function editTodo(id) {
     const textSpan = document.getElementById("text-" + id);
     const originalText = textSpan.innerText;
     textSpan.addEventListener('blur', function() {
-        const newText = textSpan.innerText
-        if (newText.trim().length) {
-            getItemFromServer(id).then(result => updateItemInServer({...result, text: newText.trim() }))
+        const newText = textSpan.innerText.trim()
+        if (newText.length) {
+            getItemFromServer(id).then(result => updateItemInServer({...result, text: newText }))
+            textSpan.innerText = newText;
         } else {
             textSpan.innerText = originalText;
         }

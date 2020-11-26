@@ -1,4 +1,3 @@
 module.exports = {
-    presets: ["@babel/preset-env"],
-    entry: ["@babel/polyfill", "./app/js"],
+    presets: ["@babel/preset-env"]
 }
