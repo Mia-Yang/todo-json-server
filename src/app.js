@@ -134,17 +134,24 @@ function removeTodo(id) {
 //toggle todos
 window.toggleTodo = toggleTodo;
 
-async function toggleTodo(id) {
-    // fetch(`http://localhost:3000/todos/${id}`, { method: 'GET' })
-    //     .then(response => response.json())
-    //     .then(result => updateItemInServer({...result, completed: !result.completed }))
-    //     .catch(error => {
-    //         console.error('Error:', error);
-    //     });
-
+function toggleTodo(id) {
     getItemFromServer(id).then(result => updateItemInServer({...result, completed: !result.completed }))
-
-
-
     document.getElementById(id).classList.toggle("finished")
+}
+
+//edit todos
+
+window.editTodo = editTodo;
+
+function editTodo(id) {
+    const textSpan = document.getElementById("text-" + id);
+    const originalText = textSpan.innerText;
+    textSpan.addEventListener('blur', function() {
+        const newText = textSpan.innerText
+        if (newText.trim().length) {
+            getItemFromServer(id).then(result => updateItemInServer({...result, text: newText.trim() }))
+        } else {
+            textSpan.innerText = originalText;
+        }
+    })
 }
