@@ -1,11 +1,6 @@
 {
   "todos": [
     {
-      "id": 1606372793297,
-      "text": "clean my room",
-      "completed": false
-    },
-    {
       "id": 1606372806218,
       "text": "visit my friend",
       "completed": false

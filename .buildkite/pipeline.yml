@@ -1,0 +1,3 @@
+steps:
+  - label: 'todo: Tests'
+    command: 'npm install'

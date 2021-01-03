@@ -70,7 +70,6 @@ function toggleTodo(id) {
         .then(document.getElementById(id).classList.toggle("finished"))
     const spanElement = document.getElementById("text-" + id);
     getItemFromServer(id).then(result => result.completed ? spanElement.setAttribute("contentEditable", true) : spanElement.setAttribute("contentEditable", false))
-
 }
 
 //edit todos
